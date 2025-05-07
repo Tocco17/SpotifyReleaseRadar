@@ -1,14 +1,7 @@
 'use server'
 
+import { AccessToken } from "../models/AccessToken";
 import { getProcessVariableRequired } from "../utils";
-
-type ResponseData = {
-	access_token: string
-	token_type: string
-	scope: string
-	expires_in: number
-	refresh_token: string
-}
 
 export async function getSpotifyAccessToken(code: string) {
 	const spotifyTokenUrl = 'https://accounts.spotify.com/api/token'
@@ -21,14 +14,12 @@ export async function getSpotifyAccessToken(code: string) {
 		body: body,
 	})
 
-	const data = await response.json() as ResponseData
+	const data = (await response.json()) as AccessToken
 
-	console.log(data)
-
-
+	return data
 }
 
-function getHeaders(){
+function getHeaders() {
 	const clientId = getProcessVariableRequired('SpotifyClientId')
 	const clientSecret = getProcessVariableRequired('SpotifyClientSecret')
 
@@ -53,12 +44,4 @@ function getBody(code: string) {
 	params.append('redirect_uri', redirectUri)
 
 	return params.toString()
-	
-	// const body = {
-	// 	grant_type: grantType,
-	// 	code: code,
-	// 	redirect_uri: redirectUri,
-	// }
-
-	// return body
 }
