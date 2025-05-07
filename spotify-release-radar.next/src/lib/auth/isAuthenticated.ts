@@ -1,20 +1,16 @@
 import { NextRequest } from "next/server"
 import { spotifyAuthResponseType } from "./redirectToSpotifyLogin"
+import { getProcessVariableRequired } from "../utils"
 
 export type AuthStatus = 'NotAuthenticated' | 'Authenticated' | 'RedirectToAuthLink' | 'FirstAuthentication'
 
 export async function isAuthenticated(req: NextRequest): Promise<AuthStatus> {
-	const codeFromQuery = req.nextUrl.searchParams.get(spotifyAuthResponseType)
-	const cookieCode = req.cookies.get(spotifyAuthResponseType)?.value
+	const spotifyRedirectUrl = getProcessVariableRequired('SpotifyAuthRedirectUrl')
+	const spotifyRedirectPath = new URL(spotifyRedirectUrl).pathname
+	const currentPath = req.nextUrl.pathname
 
-	if (!codeFromQuery && !cookieCode)
-		return 'NotAuthenticated'
+	if(spotifyRedirectPath === currentPath)
+		return 'FirstAuthentication'
 
-	if (!codeFromQuery && !!cookieCode)
-		return 'RedirectToAuthLink'
-
-	if (!!codeFromQuery && !cookieCode)
-		return "FirstAuthentication"
-
-	return 'Authenticated'
+	return 'NotAuthenticated'
 }

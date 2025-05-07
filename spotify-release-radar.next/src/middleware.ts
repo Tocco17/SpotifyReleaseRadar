@@ -1,20 +1,21 @@
 import { NextRequest } from "next/server";
 import { isAuthenticated } from "./lib/auth/isAuthenticated";
 import { redirectToSpotifyLogin } from "./lib/auth/redirectToSpotifyLogin";
-import { firstAuthentication } from "./lib/auth/firstAuthentication";
+import { redirectToFirstAuthentication } from "./lib/auth/redirectToFirstAuthentication";
 import { redirectToAuthLink } from "./lib/auth/redirectToAuthLink";
+import { redirectToAuthenticated } from "./lib/auth/redirectToAuthenticated";
 
 export async function middleware(req: NextRequest) {
 	const authStatus = await isAuthenticated(req)
 
 	if (authStatus === "Authenticated")
-		return undefined
+		return redirectToAuthenticated(req)
 
 	if (authStatus === "NotAuthenticated")
 		return redirectToSpotifyLogin(req)
 
 	if (authStatus === "FirstAuthentication")
-		return firstAuthentication(req)
+		return redirectToFirstAuthentication(req)
 
 	if(authStatus === "RedirectToAuthLink")
 		return redirectToAuthLink(req)
@@ -23,3 +24,20 @@ export async function middleware(req: NextRequest) {
 export const config = {
 	matcher: "/user/:path*"
 }
+
+
+/*
+Not auth
+	Si va su spotify con un login
+	Rimanda al link segnato
+		Successo:
+			code
+			state
+		Errore:
+			error
+			state
+	
+	Si richiede un access token con una chiamata POST all'API di spotify
+
+
+*/

@@ -24,10 +24,8 @@ function getAuthUrl(req: NextRequest) {
 }
 
 function getAuthParams(req: NextRequest) {
-	const path = req.nextUrl.pathname;
-
 	const clientId = getProcessVariableRequired('SpotifyClientId')
-	const redirectUrl = `${getProcessVariableRequired('SpotifyAuthRedirectUrl')}${path}`
+	const redirectUrl = getProcessVariableRequired('SpotifyAuthRedirectUrl')
 	const clientSecret = getProcessVariableRequired('SpotifyClientSecret')
 	const responseType = spotifyAuthResponseType
 
