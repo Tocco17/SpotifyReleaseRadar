@@ -1,52 +1,25 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getProcessVariableRequired } from "./lib/utils";
+import { NextRequest } from "next/server";
+import { isAuthenticated } from "./lib/auth/isAuthenticated";
+import { redirectToSpotifyLogin } from "./lib/auth/redirectToSpotifyLogin";
+import { firstAuthentication } from "./lib/auth/firstAuthentication";
+import { redirectToAuthLink } from "./lib/auth/redirectToAuthLink";
 
 export async function middleware(req: NextRequest) {
-	if (!!(await isAuthenticated(req)))
+	const authStatus = await isAuthenticated(req)
+
+	if (authStatus === "Authenticated")
 		return undefined
 
-	const authUrl = getAuthUrl(req)
-	
-	return NextResponse.redirect(authUrl)
-}
+	if (authStatus === "NotAuthenticated")
+		return redirectToSpotifyLogin(req)
 
-async function isAuthenticated(req: NextRequest) {
-	return false
+	if (authStatus === "FirstAuthentication")
+		return firstAuthentication(req)
+
+	if(authStatus === "RedirectToAuthLink")
+		return redirectToAuthLink(req)
 }
 
 export const config = {
 	matcher: "/user/:path*"
-}
-
-function getAuthUrl(req: NextRequest){
-	const authUrl = process.env.SpotifyAuthorizeUrl
-	if(!authUrl)
-		throw new Error("Auth url not present.")
-	
-	const params = getAuthParams(req)
-
-	const url = new URL(authUrl)
-	url.searchParams.set('response_type', params.responseType)
-	url.searchParams.set('client_id', params.clientId)
-	url.searchParams.set('redirect_uri', params.redirectUrl)
-
-	return url
-}
-
-function getAuthParams(req: NextRequest) {
-	const path = req.nextUrl.pathname;
-	
-	const clientId = getProcessVariableRequired('SpotifyClientId')
-	const redirectUrl = getProcessVariableRequired('SpotifyAuthRedirectUrl')
-	const clientSecret = getProcessVariableRequired('SpotifyClientSecret')
-	const responseType = getProcessVariableRequired('SpotifyAuthResponseType')
-
-	console.log('redirect ' + redirectUrl)
-
-	return {
-		clientId,
-		redirectUrl,
-		clientSecret,
-		responseType,
-	}
 }
