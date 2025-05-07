@@ -2,7 +2,6 @@ import { NextRequest } from "next/server";
 import { isAuthenticated } from "./lib/auth/isAuthenticated";
 import { redirectToSpotifyLogin } from "./lib/auth/redirectToSpotifyLogin";
 import { redirectToFirstAuthentication } from "./lib/auth/redirectToFirstAuthentication";
-import { redirectToAuthLink } from "./lib/auth/redirectToAuthLink";
 import { redirectToAuthenticated } from "./lib/auth/redirectToAuthenticated";
 
 export async function middleware(req: NextRequest) {
@@ -16,9 +15,6 @@ export async function middleware(req: NextRequest) {
 
 	if (authStatus === "FirstAuthentication")
 		return redirectToFirstAuthentication(req)
-
-	if(authStatus === "RedirectToAuthLink")
-		return redirectToAuthLink(req)
 }
 
 export const config = {

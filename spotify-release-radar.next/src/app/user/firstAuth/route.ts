@@ -1,21 +1,17 @@
 'use server'
 
 import { spotifyAuthResponseType } from "@/lib/auth/redirectToSpotifyLogin"
+import { setCookie } from "@/lib/cookies"
 import { getSpotifyAccessToken } from "@/lib/spotifyCalls/getSpotifyAccessToken"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import { NextRequest } from "next/server"
 
-export default async function FirstAuth({
-	searchParams
-}: {
-	searchParams: Promise<{ [spotifyAuthResponseType]: string }>
-}) {
-	const spotifyCode = (await searchParams)[spotifyAuthResponseType] as string
+export async function GET(req: NextRequest) {
+	const spotifyCode = req.nextUrl.searchParams.get(spotifyAuthResponseType) as string
 	const accessToken = await getSpotifyAccessToken(spotifyCode)
-
-	const cookieStore = await cookies()
-
-	cookieStore.set('spotify_access_token', JSON.stringify(accessToken))
+	
+	await setCookie('spotify_access_token', JSON.stringify(accessToken))
 
 	redirect('/user')
 }
