@@ -5,7 +5,7 @@ import { getProcessVariableRequired } from "../utils"
 export type AuthStatus = 'NotAuthenticated' | 'Authenticated' | 'RedirectToAuthLink' | 'FirstAuthentication'
 
 export async function isAuthenticated(req: NextRequest): Promise<AuthStatus> {
-	const spotifyRedirectUrl = getProcessVariableRequired('SpotifyAuthRedirectUrl')
+	const spotifyRedirectUrl = getProcessVariableRequired('SpotifyAuthRedirectUri')
 	const spotifyRedirectPath = new URL(spotifyRedirectUrl).pathname
 	const currentPath = req.nextUrl.pathname
 
