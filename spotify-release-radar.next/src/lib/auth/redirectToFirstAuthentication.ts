@@ -1,5 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
-import { spotifyAuthResponseType } from "./redirectToSpotifyLogin";
+import { NextRequest } from "next/server";
 
 export function redirectToFirstAuthentication(req: NextRequest) {
 	return undefined
