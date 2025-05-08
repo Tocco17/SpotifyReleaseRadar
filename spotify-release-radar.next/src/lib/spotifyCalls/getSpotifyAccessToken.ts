@@ -1,17 +1,40 @@
 'use server'
 
+import { getCookie } from "../cookies";
 import { AccessToken } from "../models/AccessToken";
 import { getProcessVariableRequired } from "../utils";
 
-export async function getSpotifyAccessToken(code: string) {
+export async function getSpotifyFirstAccessToken(code: string) {
+	const redirectUri = getProcessVariableRequired('SpotifyAuthRedirectUri')
+
+	const params = new URLSearchParams()
+	params.append('grant_type', 'authorization_code')
+	params.append('code', code)
+	params.append('redirect_uri', redirectUri)
+
+	return getSpotifyAccessToken(params)
+}
+
+export async function getSpotifyRefreshedAccessToken() {
+	const accessToken = await getCookie<AccessToken>("spotify_access_token")
+	if(!accessToken)
+		throw new Error("AccessToken not saved for the refreshing process.")
+
+	const params = new URLSearchParams()
+	params.append('grant_type', 'refresh_token')
+	params.append('refresh_token', accessToken.refresh_token)
+
+	return getSpotifyAccessToken(params)
+}
+
+async function getSpotifyAccessToken(params: URLSearchParams) {
 	const spotifyTokenUrl = 'https://accounts.spotify.com/api/token'
 	const headers = getHeaders()
-	const body = getBody(code)
 
 	const response = await fetch(spotifyTokenUrl, {
 		method: 'POST',
 		headers: headers,
-		body: body,
+		body: params.toString(),
 	})
 
 	const data = (await response.json()) as AccessToken
@@ -32,16 +55,4 @@ function getHeaders() {
 	}
 
 	return headers
-}
-
-function getBody(code: string) {
-	const redirectUri = getProcessVariableRequired('SpotifyAuthRedirectUri')
-	const grantType = 'authorization_code'
-
-	const params = new URLSearchParams()
-	params.append('grant_type', grantType)
-	params.append('code', code)
-	params.append('redirect_uri', redirectUri)
-
-	return params.toString()
 }
