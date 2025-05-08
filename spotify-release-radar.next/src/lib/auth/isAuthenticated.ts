@@ -19,11 +19,7 @@ export async function isAuthenticated(req: NextRequest): Promise<AuthStatus> {
 }
 
 async function getAccessToken(){
-	const cookieCode = await getCookie("spotify_access_token")
-	if(!cookieCode)
-		return undefined
-
-	const accessToken = JSON.parse(cookieCode.value) as AccessToken
+	const accessToken = getCookie<AccessToken>("spotify_access_token")
 	return accessToken
 }
 

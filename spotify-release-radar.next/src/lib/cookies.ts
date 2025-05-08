@@ -9,8 +9,14 @@ export async function setCookie(key: CookieKey, data: string) {
 	cookieStore.set(key, data)
 }
 
-export async function getCookie(key: CookieKey) {
+export async function getCookie<TCookieType>(key: CookieKey) {
 	const cookieStore = await cookies()
 	const data = cookieStore.get(key)
-	return data
+	const valueStringified = data?.value
+
+	if(!valueStringified)
+		return undefined
+	
+	const value = JSON.parse(valueStringified) as TCookieType
+	return value
 }
