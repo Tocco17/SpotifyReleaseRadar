@@ -5,9 +5,6 @@ import { getCurrentUserProfile } from "@/lib/spotifyCalls/getCurrentUserProfile"
 async function getUserData(){
 	const userData = await getCurrentUserProfile()
 
-	console.log('userData')
-	console.log(userData)
-	
 	return userData
 }
 
