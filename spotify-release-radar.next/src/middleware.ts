@@ -4,7 +4,7 @@ import { redirectToSpotifyLogin } from "./lib/auth/redirectToSpotifyLogin";
 import { redirectToFirstAuthentication } from "./lib/auth/redirectToFirstAuthentication";
 import { redirectToAuthenticated } from "./lib/auth/redirectToAuthenticated";
 
-export async function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {	
 	const authStatus = await isAuthenticated(req)
 
 	if (authStatus === "Authenticated")

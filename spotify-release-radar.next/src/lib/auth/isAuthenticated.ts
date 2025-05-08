@@ -8,12 +8,12 @@ export type AuthStatus = 'NotAuthenticated' | 'Authenticated' | 'FirstAuthentica
 
 export async function isAuthenticated(req: NextRequest): Promise<AuthStatus> {
 	const accessToken = await getAccessToken()
+	const isFirstAuth = isFirstAuthenticationLink(req)
 
 	if(!accessToken)
-		return 'NotAuthenticated'
-
-	if(isFirstAuthenticationLink(req))
-		return 'FirstAuthentication'
+		return isFirstAuth 
+			? 'FirstAuthentication'
+			: 'NotAuthenticated'
 
 	return 'Authenticated'
 }

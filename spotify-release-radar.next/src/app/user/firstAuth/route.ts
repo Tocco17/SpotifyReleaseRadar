@@ -3,7 +3,6 @@
 import { spotifyAuthResponseType } from "@/lib/auth/redirectToSpotifyLogin"
 import { setCookie } from "@/lib/cookies"
 import { getSpotifyAccessToken } from "@/lib/spotifyCalls/getSpotifyAccessToken"
-import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { NextRequest } from "next/server"
 
