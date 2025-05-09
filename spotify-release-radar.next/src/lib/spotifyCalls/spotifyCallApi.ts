@@ -52,7 +52,10 @@ export async function getFetch<TResponse>(url: string, params?: Record<string, a
 
 	const response = await fetchApi(call)
 	const data = response.json() as TResponse
-	return data
+	return {
+		response,
+		data,
+	}
 }
 
 function getUrlWithQuery(url: string, params?: Record<string, any>) {
