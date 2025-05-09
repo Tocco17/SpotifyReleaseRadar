@@ -5,7 +5,12 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
 
-type ProcessVariableName = 'SpotifyClientId' | 'SpotifyClientSecret' | 'SpotifyAuthorizeUrl' | 'SpotifyAuthRedirectUri'
+type ProcessVariableName = 
+'SpotifyClientId' | 
+'SpotifyClientSecret' | 
+'SpotifyAuthorizeUrl' | 
+'SpotifyAuthRedirectUri' | 
+'SpotifyAuthRefreshUri'
 
 export function getProcessVariableRequired(name: ProcessVariableName) {
 	const variable = process.env[name]

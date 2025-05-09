@@ -1,5 +1,6 @@
 import { getCookie, setCookie } from "../cookies"
 import { AccessToken } from "../models/AccessToken"
+import { getProcessVariableRequired } from "../utils"
 import { getSpotifyRefreshedAccessToken } from "./getSpotifyAccessToken"
 
 async function fetchApi(call: () => Promise<Response>) {
@@ -14,8 +15,11 @@ async function fetchApi(call: () => Promise<Response>) {
 }
 
 async function refreshToken(){
-	const refreshedToken = await getSpotifyRefreshedAccessToken()
-	return setCookie('spotify_access_token', JSON.stringify(refreshedToken))
+	const refreshUrl = getProcessVariableRequired('SpotifyAuthRefreshUri')
+	const response = fetch(refreshUrl, {
+		method: 'GET'
+	})
+	return response
 }
 
 
