@@ -1,10 +1,8 @@
 import { getFetch } from "./spotifyCallApi";
 
 export async function getCurrentUserProfile() {
-	const response = await getFetch('https://api.spotify.com/v1/me')
-	const data = response.json() as Promise<CurrentUserProfile>
-
-	return data
+	const response = await getFetch<CurrentUserProfile>('https://api.spotify.com/v1/me')
+	return response
 }
 
 export type CurrentUserProfile = {

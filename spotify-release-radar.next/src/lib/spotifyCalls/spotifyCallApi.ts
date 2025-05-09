@@ -7,14 +7,14 @@ async function fetchApi(call: () => Promise<Response>) {
 	const response = await call()
 
 	const status = response.status
-	if(status !== 401)
+	if (status !== 401)
 		return response
 
 	await refreshToken()
 	return call()
 }
 
-async function refreshToken(){
+async function refreshToken() {
 	const refreshUrl = getProcessVariableRequired('SpotifyAuthRefreshUri')
 	const response = fetch(refreshUrl, {
 		method: 'GET'
@@ -36,11 +36,13 @@ async function getHeaders() {
 	return headers
 }
 
-export async function getFetch(url: string) {
+export async function getFetch<TResponse>(url: string, params?: Record<string, any>) {
+	const queriedUrl = getUrlWithQuery(url, params)
+
 	const call = async () => {
 		const headers = await getHeaders()
 
-		const response = fetch(url, {
+		const response = fetch(queriedUrl, {
 			method: 'GET',
 			headers,
 		})
@@ -48,6 +50,15 @@ export async function getFetch(url: string) {
 		return response
 	}
 
-	const response = fetchApi(call)
-	return response
+	const response = await fetchApi(call)
+	const data = response.json() as TResponse
+	return data
+}
+
+function getUrlWithQuery(url: string, params?: Record<string, any>) {
+	if (!params)
+		return url
+
+	const queryString = new URLSearchParams(params).toString()
+	return `${url}${url.includes('?') ? '&' : '?'}${queryString}`
 }
