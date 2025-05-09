@@ -23,6 +23,5 @@ export default async function UserPage() {
 				<AvatarFallback>CN</AvatarFallback>
 			</Avatar>
 		}
-
 	</>)
 }
