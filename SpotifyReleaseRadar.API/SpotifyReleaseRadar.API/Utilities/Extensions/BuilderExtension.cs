@@ -12,6 +12,7 @@ public static class BuilderExtension
 
 	private static void AddServices(this WebApplicationBuilder builder)
 	{
+		builder.Services.AddScoped<ISpotifyAuthentication, SpotifyAuthentication>();
 	}
 }
 
