@@ -6,6 +6,9 @@ public abstract class GetRequest : IGetRequest
 {
 	public virtual string ToQueryString()
 	{
-		throw new NotImplementedException();
+		var properties = GetType().GetProperties()
+			.Where(p => p.GetValue(this) != null)
+			.Select(p => $"{p.Name}={Uri.EscapeDataString(p.GetValue(this)?.ToString() ?? string.Empty)}");
+		return string.Join("&", properties);
 	}
 }
